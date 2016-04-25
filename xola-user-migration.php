@@ -67,13 +67,13 @@
                     </div>
                 </div>
                 <div class="field">
-                <label>Source URL</label>
+                <label>Source Environment URL</label>
                     <div class="ui input">
                         <input type="text" name="s_url" placeholder="https://xola.com" required>
                     </div>
                 </div>
                 <div class="field">
-                <label>Admin User Name</label>
+                <label>Admin Username</label>
                     <div class="ui input">
                         <input type="text" name="s_user_name" placeholder="Admin User Name"
                                required>
@@ -88,13 +88,13 @@
                 </div>
                 <h4 class="ui dividing header">Destination Information</h4>
                 <div class="field">
-                <label>Destination URL</label>
+                <label>Destination Environment URL</label>
                     <div class="ui  input">
                         <input type="text" name="d_url" placeholder="https://dev.xola.com" required>
                     </div>
                 </div>              
                 <div class="field">
-                <label>Admin User Name</label>
+                <label>Admin Username</label>
                     <div class="ui input">
                         <input type="text" name="d_user_name" placeholder="Admin User Name"
                                required>
@@ -117,10 +117,11 @@
 </div>
 <?php
 
-if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
+if (($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['seller_id'],$_POST['s_url'],$_POST['s_user_name'],$_POST['s_password'],$_POST['d_url'],$_POST['d_user_name'],$_POST['d_password'])) {
     xola_user_fetch_post();
+} else{
+	echo '<div align="center">We are unable to proceed! Please Fill in the above details</div>';
 }
-
 function admin_source_api_fetch()
 {
 
@@ -293,7 +294,7 @@ function xola_user_fetch_post()
         if ($err_user_post) {
             echo "cURL Error #:" . $err_user_post;
         } else {
-            echo "User Is Created. The Password is :" . $password, PHP_EOL;
+            echo '<div align="center"> User Is Created. The Password is : ' . $password .'</div>', PHP_EOL;
 
         }
     }

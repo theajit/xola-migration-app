@@ -44,7 +44,7 @@ function admin_api_fetch()
 }
 
 $i = $_POST['d_exp_url'];
-$j = $_POST['seller_id'];
+$j = $_POST['seller_username'];
 
 $apiKey_user = admin_api_fetch();
 

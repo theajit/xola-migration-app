@@ -49,7 +49,6 @@
 
 </head>
 <body>
-
 <div class="ui middle aligned center aligned grid">
     <div class="column">
         <h2 class="ui teal image header">
@@ -62,20 +61,20 @@
         <form class="ui medium form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="ui stacked segment">
             <h4 class="ui dividing header">Source Information</h4>
-            	<div class="field">
+              	<div class="field">
             	<label>Seller E-mail</label>
                     <div class="ui  input">
                         <input type="text" name="seller_username" placeholder="seller@website.xyz" required />
                     </div>
                 </div>
                 <div class="field">
-                <label>Source URL</label>
+                <label>Source Environment URL</label>
                     <div class="ui input">
                         <input type="text" name="s_exp_url" placeholder="https://xola.com" required />
                     </div>
                 </div>
                 <div class="field">
-                <label>Admin User Name</label>
+                <label>Admin Username</label>
                     <div class="ui input">
                         <input type="text" name="s_user_name" placeholder="Admin User Name "
                                required>
@@ -88,9 +87,10 @@
                                required />
                     </div>
                 </div>
+                
                  <h4 class="ui dividing header">Destination Information</h4>
                 <div class="field">
-                <label>Destination URL</label>
+                <label>Destination Environment URL</label>
                     <div class="ui  input">
                         <input type="text" name="d_exp_url" placeholder="https://dev.xola.com" required />
                     </div>
@@ -105,7 +105,7 @@
                 </div>
                 
                 <div class="field">
-                <label>Admin User Name</label>
+                <label>Admin Username</label>
                     <div class="ui input">
                         <input type="text" name="d_user_name" placeholder="Admin User Name"
                                required />
@@ -128,13 +128,17 @@
         </form>
     </div>
 </div>
+
 <?php
 ini_set('max_execution_time', 600);
 
-if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
+if (($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['seller_username'],$_POST['s_exp_url'],$_POST['s_user_name'],$_POST['s_password'],$_POST['d_exp_url'],$_POST['d_user_name'],$_POST['d_password'],$_POST['d_admin_password'])) {
+    
     include_once('xola-user-api.php');
     user_api_fetch();
     xola_exp_fetch_post();
+} else{
+	echo '<div align="center">We are unable to proceed! Please Fill in the above details.</div>';
 }
 
 function user_api_fetch()
@@ -265,7 +269,7 @@ function xola_exp_fetch_post()
         echo "cURL Error #:" . $err_exp_fetch;
     } else {
         //var_dump($decode);
-
+	
         foreach ($decode['data'] as $data) {
             //$data = $decode['data'][0];
             //var_dump($data);
@@ -309,10 +313,12 @@ function xola_exp_fetch_post()
             } else {
                 $first = count($decode['data']);
                 //print_r($_POST);
+            
             }
 
         }
-
+    } 
+    
         foreach ($decode['paging'] as $data_paging) {
             //var_dump($data_paging);
             $page_url = $data_paging;
@@ -385,12 +391,15 @@ function xola_exp_fetch_post()
                     } else {
                         $next = count($decode_next['data']);
                         //print_r($_POST);
+                        
                     }
                 }
             }
         }
-    }
-    echo ($first + $next) . ' Experiences Migrated';
+    
+    
+	
+    echo '<div align="center">'. ($first + $next) . ' Experiences Migrated</div>';
 }
 
 ?>
