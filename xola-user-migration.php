@@ -26,7 +26,6 @@
     <link rel="stylesheet" type="text/css" href="dist/components/message.css">
     <link rel="stylesheet" type="text/css" href="dist/components/icon.css">
 
-    <script src="assets/library/jquery.min.js"></script>
     <script src="dist/components/form.js"></script>
     <script src="dist/components/transition.js"></script>
     <!-- -->
@@ -73,7 +72,7 @@
                 </div>
                 <div class="field">
                     <div class="ui  input">
-                        <input type="text" name="seller" placeholder="Seller ID Only" required>
+                        <input type="text" name="seller_id" placeholder="Seller ID Only" required>
                     </div>
                 </div>
                 <div class="field">
@@ -204,7 +203,7 @@ function xola_user_fetch_post()
 {
     $s_url = $_POST['s_url'];
     $d_url = $_POST['d_url'];
-    $seller_id = $_POST['seller'];
+    $seller_id = $_POST['seller_id'];
 
     $apiKey_s = admin_source_api_fetch();
     $apiKey_d = admin_destination_api_fetch();

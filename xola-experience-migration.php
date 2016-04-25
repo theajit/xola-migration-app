@@ -26,7 +26,6 @@
     <link rel="stylesheet" type="text/css" href="dist/components/message.css">
     <link rel="stylesheet" type="text/css" href="dist/components/icon.css">
 
-    <script src="assets/library/jquery.min.js"></script>
     <script src="dist/components/form.js"></script>
     <script src="dist/components/transition.js"></script>
 
@@ -73,7 +72,7 @@
                 </div>
                 <div class="field">
                     <div class="ui  input">
-                        <input type="text" name="seller_id" placeholder="Seller E-mail" required />
+                        <input type="text" name="seller_username" placeholder="Seller E-mail" required />
                     </div>
                 </div>
                 <div class="field">
@@ -120,7 +119,7 @@
 ini_set('max_execution_time', 600);
 
 if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
-    include_once('users-me.php');
+    include_once('xola-user-api.php');
     user_api_fetch();
     xola_exp_fetch_post();
 }
@@ -129,7 +128,7 @@ function user_api_fetch()
 {
 
     $d_exp_url = $_POST['d_exp_url'];
-    $seller_id = $_POST['seller_id'];
+    $seller_username = $_POST['seller_username'];
     $d_password = $_POST['d_password'];
 
     $ch_id = curl_init();
@@ -137,7 +136,7 @@ function user_api_fetch()
     curl_setopt($ch_id, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch_id, CURLOPT_CUSTOMREQUEST, "GET");
     curl_setopt($ch_id, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    curl_setopt($ch_id, CURLOPT_USERPWD, $seller_id . ':' . $d_password);
+    curl_setopt($ch_id, CURLOPT_USERPWD, $seller_username . ':' . $d_password);
     curl_setopt($ch_id, CURLOPT_SSL_VERIFYHOST, 0);
     curl_setopt($ch_id, CURLOPT_SSL_VERIFYPEER, 0);
 
@@ -157,7 +156,7 @@ function user_api_fetch()
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_USERPWD, $seller_id . ':' . $d_password);
+        curl_setopt($ch, CURLOPT_USERPWD, $seller_username . ':' . $d_password);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 
@@ -219,14 +218,14 @@ function xola_exp_fetch_post()
 
     $s_exp_url = $_POST['s_exp_url'];
     $d_exp_url = $_POST['d_exp_url'];
-    $seller_id = $_POST['seller_id'];
+    $seller_username = $_POST['seller_username'];
     //user_enable();
     $api_key = user_api_fetch();
     $api_key_s = admin_source_api_fetch();
     $curl_exp_fetch = curl_init();
 
     curl_setopt_array($curl_exp_fetch, array(
-        CURLOPT_URL => $s_exp_url . '/api/experiences?seller=' . $seller_id . '&admin=true&limit=100',
+        CURLOPT_URL => $s_exp_url . '/api/experiences?seller=' . $seller_username . '&admin=true&limit=100',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
