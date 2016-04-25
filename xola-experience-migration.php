@@ -57,62 +57,63 @@
                 User Experience Migration
             </div>
         </h2>
-        <h4>This helps to enable the user at destination and migrate experiences from source to destination environment</h4>
+        <h4>This helps to enable the user at destination and migrate experiences from source to destination
+            environment</h4>
         <form class="ui medium form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="ui stacked segment">
-            <h4 class="ui dividing header">Source Information</h4>
-              	<div class="field">
-            	<label>Seller E-mail</label>
+                <h4 class="ui dividing header">Source Information</h4>
+                <div class="field">
+                    <label>Seller E-mail</label>
                     <div class="ui  input">
                         <input type="text" name="seller_username" placeholder="seller@website.xyz" required />
                     </div>
                 </div>
                 <div class="field">
-                <label>Source Environment URL</label>
+                    <label>Source Environment URL</label>
                     <div class="ui input">
                         <input type="text" name="s_exp_url" placeholder="https://xola.com" required />
                     </div>
                 </div>
                 <div class="field">
-                <label>Admin Username</label>
+                    <label>Admin Username</label>
                     <div class="ui input">
                         <input type="text" name="s_user_name" placeholder="Admin User Name "
                                required>
                     </div>
                 </div>
                 <div class="field">
-                <label>Admin Password</label>
+                    <label>Admin Password</label>
                     <div class="ui  input">
                         <input type="password" name="s_password" placeholder="Admin Password"
                                required />
                     </div>
                 </div>
-                
-                 <h4 class="ui dividing header">Destination Information</h4>
+
+                <h4 class="ui dividing header">Destination Information</h4>
                 <div class="field">
-                <label>Destination Environment URL</label>
+                    <label>Destination Environment URL</label>
                     <div class="ui  input">
                         <input type="text" name="d_exp_url" placeholder="https://dev.xola.com" required />
                     </div>
                 </div>
-                
+
                 <div class="field">
-                <label>Seller Password</label>
+                    <label>Seller Password</label>
                     <div class="ui  input">
                         <input type="password" name="d_password" placeholder="Password Generated while creating User"
                                required />
                     </div>
                 </div>
-                
+
                 <div class="field">
-                <label>Admin Username</label>
+                    <label>Admin Username</label>
                     <div class="ui input">
                         <input type="text" name="d_user_name" placeholder="Admin User Name"
                                required />
                     </div>
                 </div>
                 <div class="field">
-                <label>Admin Password</label>
+                    <label>Admin Password</label>
                     <div class="ui  input">
                         <input type="password" name="d_admin_password"
                                placeholder="Admin Password" required />
@@ -132,13 +133,14 @@
 <?php
 ini_set('max_execution_time', 600);
 
-if (($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['seller_username'],$_POST['s_exp_url'],$_POST['s_user_name'],$_POST['s_password'],$_POST['d_exp_url'],$_POST['d_user_name'],$_POST['d_password'],$_POST['d_admin_password'])) {
-    
-    include_once('xola-user-api.php');
-    user_api_fetch();
-    xola_exp_fetch_post();
-} else{
-	echo '<div align="center">We are unable to proceed! Please Fill in the above details.</div>';
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['seller_username'], $_POST['s_exp_url'], $_POST['s_user_name'], $_POST['s_password'], $_POST['d_exp_url'], $_POST['d_user_name'], $_POST['d_password'], $_POST['d_admin_password'])) {
+        include_once('xola-user-api.php');
+        user_api_fetch();
+        xola_exp_fetch_post();
+    } else {
+        echo '<div align="center">We are unable to proceed! Please Fill in the above details.</div>';
+    }
 }
 
 function user_api_fetch()
@@ -269,90 +271,92 @@ function xola_exp_fetch_post()
         echo "cURL Error #:" . $err_exp_fetch;
     } else {
         //var_dump($decode);
-		if(!empty($decode['data'])){
-        foreach ($decode['data'] as $data) {
-            //$data = $decode['data'][0];
-            //var_dump($data);
-            unset($data['seller']);
-            unset($data['photo']);
-            unset($data['medias']);
-            //var_dump($data);
+        if (!empty($decode['data'])) {
+            foreach ($decode['data'] as $data) {
+                //$data = $decode['data'][0];
+                //var_dump($data);
+                unset($data['seller']);
+                unset($data['photo']);
+                unset($data['medias']);
+                //var_dump($data);
 
-            $post_exp = json_encode($data);
+                $post_exp = json_encode($data);
 
-            //var_dump($data);
-            $curl_exp_post = curl_init();
+                //var_dump($data);
+                $curl_exp_post = curl_init();
 
-            curl_setopt_array($curl_exp_post, array(
-                CURLOPT_URL => $d_exp_url . '/api/experiences',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "POST",
-                CURLOPT_SSL_VERIFYHOST => 0,
-                CURLOPT_SSL_VERIFYPEER => 0,
-                CURLOPT_POSTFIELDS => $post_exp,
-                CURLOPT_HTTPHEADER => array(
-                    "Content-Type: application/json",
-                    "Cache-Control: no-cache",
-                    "x-api-key: " . $api_key,
-                    "Accept: application/json"
+                curl_setopt_array($curl_exp_post, array(
+                    CURLOPT_URL => $d_exp_url . '/api/experiences',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => "",
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 30,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => "POST",
+                    CURLOPT_SSL_VERIFYHOST => 0,
+                    CURLOPT_SSL_VERIFYPEER => 0,
+                    CURLOPT_POSTFIELDS => $post_exp,
+                    CURLOPT_HTTPHEADER => array(
+                        "Content-Type: application/json",
+                        "Cache-Control: no-cache",
+                        "x-api-key: " . $api_key,
+                        "Accept: application/json"
 
-                ),
-            ));
+                    ),
+                ));
 
-            $response_exp_post = curl_exec($curl_exp_post);
-            $err_exp_post = curl_error($curl_exp_post);
-            //$decode = json_decode($response,TRUE);
+                $response_exp_post = curl_exec($curl_exp_post);
+                $err_exp_post = curl_error($curl_exp_post);
+                //$decode = json_decode($response,TRUE);
 
-            curl_close($curl_exp_post);
-            if ($err_exp_post) {
-                echo "cURL Error #:" . $err_exp_post;
-            } else {
-                $first = count($decode['data']);
-                //print_r($_POST);
-            
+                curl_close($curl_exp_post);
+                if ($err_exp_post) {
+                    echo "cURL Error #:" . $err_exp_post;
+                } else {
+                    $first = count($decode['data']);
+                    //print_r($_POST);
+
+                }
+
             }
-
+        } else {
+            echo "There is No Experiences.";
         }
-   		} else { echo "There is No Experiences.";}
-    } 
-    	
-        foreach ($decode['paging'] as $data_paging) {
-            //var_dump($data_paging);
-            $page_url = $data_paging;
-            $curl_exp_next_fetch = curl_init();
+    }
 
-            curl_setopt_array($curl_exp_next_fetch, array(
-                CURLOPT_URL => $s_exp_url . $page_url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "GET",
-                CURLOPT_SSL_VERIFYHOST => 0,
-                CURLOPT_SSL_VERIFYPEER => 0,
-                CURLOPT_HTTPHEADER => array(
-                    "cache-control: no-cache",
-                    "x-api-key: " . $api_key_s
-                ),
-            ));
+    foreach ($decode['paging'] as $data_paging) {
+        //var_dump($data_paging);
+        $page_url = $data_paging;
+        $curl_exp_next_fetch = curl_init();
 
-            $response_exp_next_fetch = curl_exec($curl_exp_next_fetch);
+        curl_setopt_array($curl_exp_next_fetch, array(
+            CURLOPT_URL => $s_exp_url . $page_url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "x-api-key: " . $api_key_s
+            ),
+        ));
 
-            $err_exp_next_fetch = curl_error($curl_exp_next_fetch);
+        $response_exp_next_fetch = curl_exec($curl_exp_next_fetch);
 
-            $decode_next = json_decode($response_exp_next_fetch, TRUE);
+        $err_exp_next_fetch = curl_error($curl_exp_next_fetch);
 
-            curl_close($curl_exp_next_fetch);
+        $decode_next = json_decode($response_exp_next_fetch, TRUE);
 
-            if ($err_exp_next_fetch) {
-                echo "cURL Error #:" . $err_exp_next_fetch;
-            } else {
-            	if(!empty($decode_next['data'])){
+        curl_close($curl_exp_next_fetch);
+
+        if ($err_exp_next_fetch) {
+            echo "cURL Error #:" . $err_exp_next_fetch;
+        } else {
+            if (!empty($decode_next['data'])) {
                 foreach ($decode_next['data'] as $data_next) {
                     # code...
                     unset($data_next['seller']);
@@ -393,17 +397,16 @@ function xola_exp_fetch_post()
                     } else {
                         $next = count($decode_next['data']);
                         //print_r($_POST);
-                        
+
                     }
                 }
-            	}else { echo "There is No Experiences.";}
+            } else {
+                echo "There is No Experiences.";
             }
         }
-    	
-    
-    
-	
-    echo '<div align="center">'. ($first + $next) . ' Experiences Migrated</div>';
+    }
+
+    echo '<div align="center">' . ($first + $next) . ' Experiences Migrated</div>';
 }
 
 ?>

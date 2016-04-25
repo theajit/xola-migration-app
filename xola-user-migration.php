@@ -59,28 +59,28 @@
         <h4>This helps to create an user at destination environment</h4>
         <form class="ui medium form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="ui stacked segment">
-            	<h4 class="ui dividing header">Source Information</h4>
-            	 <div class="field">
-            	 <label>Seller ID</label>
+                <h4 class="ui dividing header">Source Information</h4>
+                <div class="field">
+                    <label>Seller ID</label>
                     <div class="ui  input">
                         <input type="text" name="seller_id" placeholder="561dfe1b71b2ec9f1b8b4567" required>
                     </div>
                 </div>
                 <div class="field">
-                <label>Source Environment URL</label>
+                    <label>Source Environment URL</label>
                     <div class="ui input">
                         <input type="text" name="s_url" placeholder="https://xola.com" required>
                     </div>
                 </div>
                 <div class="field">
-                <label>Admin Username</label>
+                    <label>Admin Username</label>
                     <div class="ui input">
                         <input type="text" name="s_user_name" placeholder="Admin User Name"
                                required>
                     </div>
                 </div>
                 <div class="field">
-                <label>Admin Password</label>
+                    <label>Admin Password</label>
                     <div class="ui  input">
                         <input type="password" name="s_password" placeholder="Admin Password "
                                required>
@@ -88,20 +88,20 @@
                 </div>
                 <h4 class="ui dividing header">Destination Information</h4>
                 <div class="field">
-                <label>Destination Environment URL</label>
+                    <label>Destination Environment URL</label>
                     <div class="ui  input">
                         <input type="text" name="d_url" placeholder="https://dev.xola.com" required>
                     </div>
-                </div>              
+                </div>
                 <div class="field">
-                <label>Admin Username</label>
+                    <label>Admin Username</label>
                     <div class="ui input">
                         <input type="text" name="d_user_name" placeholder="Admin User Name"
                                required>
                     </div>
                 </div>
                 <div class="field">
-                <label>Admin Password</label>
+                    <label>Admin Password</label>
                     <div class="ui  input">
                         <input type="password" name="d_password" placeholder="Admin Password"
                                required>
@@ -117,10 +117,12 @@
 </div>
 <?php
 
-if (($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST['seller_id'],$_POST['s_url'],$_POST['s_user_name'],$_POST['s_password'],$_POST['d_url'],$_POST['d_user_name'],$_POST['d_password'])) {
-    xola_user_fetch_post();
-} else{
-	echo '<div align="center">We are unable to proceed! Please Fill in the above details</div>';
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['seller_id'], $_POST['s_url'], $_POST['s_user_name'], $_POST['s_password'], $_POST['d_url'], $_POST['d_user_name'], $_POST['d_password'])) {
+        xola_user_fetch_post();
+    } else {
+        echo '<div align="center">We are unable to proceed! Please Fill in the above details</div>';
+    }
 }
 function admin_source_api_fetch()
 {
@@ -245,62 +247,65 @@ function xola_user_fetch_post()
     if ($err_user_fetch) {
         echo "cURL Error #:" . $err_user_fetch;
     } else {
-    	if(!empty($decode)){
-        $name = $decode['name'];
-        $email = $decode['email'];
-        function random_password($length = 8)
-        {
-            $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
-            $password = substr(str_shuffle($chars), 0, $length);
-            return $password;
-        }
+        if (!empty($decode)) {
+            $name = $decode['name'];
+            $email = $decode['email'];
+            function random_password($length = 8)
+            {
+                $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
+                $password = substr(str_shuffle($chars), 0, $length);
+                return $password;
+            }
 
-        $password = random_password(8);
+            $password = random_password(8);
 
-        $post = [
-            'name' => $name,
-            'email' => $email,
-            'password' => $password,
-            'confirm_password' => $password,
-            'invitation_code' => 'IAMXOLA',
-            'agreement' => 'true',
-        ];
+            $post = [
+                'name' => $name,
+                'email' => $email,
+                'password' => $password,
+                'confirm_password' => $password,
+                'invitation_code' => 'IAMXOLA',
+                'agreement' => 'true',
+            ];
 
-        $curl_user_post = curl_init();
+            $curl_user_post = curl_init();
 
-        curl_setopt_array($curl_user_post, array(
-            CURLOPT_URL => $d_url . '/account/register',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_SSL_VERIFYHOST => 0,
-            CURLOPT_SSL_VERIFYPEER => 0,
-            CURLOPT_POSTFIELDS => ($post),
-            CURLOPT_HTTPHEADER => array(
-                "x-api-key : " . $apiKey_d,
-                "cache-control: no-cache"
-            ),
-        ));
+            curl_setopt_array($curl_user_post, array(
+                CURLOPT_URL => $d_url . '/account/register',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_SSL_VERIFYHOST => 0,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_POSTFIELDS => ($post),
+                CURLOPT_HTTPHEADER => array(
+                    "x-api-key : " . $apiKey_d,
+                    "cache-control: no-cache"
+                ),
+            ));
 
-        $response_user_post = curl_exec($curl_user_post);
-        $err_user_post = curl_error($curl_user_post);
-        //$decode = json_decode($response_user_post,TRUE);
+            $response_user_post = curl_exec($curl_user_post);
+            $err_user_post = curl_error($curl_user_post);
+            //$decode = json_decode($response_user_post,TRUE);
 
-        curl_close($curl_user_post);
+            curl_close($curl_user_post);
 
-        if ($err_user_post) {
-            echo "cURL Error #:" . $err_user_post;
+            if ($err_user_post) {
+                echo "cURL Error #:" . $err_user_post;
+            } else {
+                echo '<div align="center"> User Is Created. The Password is : ' . $password . '</div>', PHP_EOL;
+
+            }
         } else {
-            echo '<div align="center"> User Is Created. The Password is : ' . $password .'</div>', PHP_EOL;
-
+            echo "The User doesn't exists";
         }
-    	} else {echo "The User doesn't exists";}
     }
 
 }
+
 ?>
 </body>
 </html>
