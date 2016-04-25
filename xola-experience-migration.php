@@ -269,7 +269,7 @@ function xola_exp_fetch_post()
         echo "cURL Error #:" . $err_exp_fetch;
     } else {
         //var_dump($decode);
-	
+		if(!empty($decode['data'])){
         foreach ($decode['data'] as $data) {
             //$data = $decode['data'][0];
             //var_dump($data);
@@ -318,7 +318,7 @@ function xola_exp_fetch_post()
 
         }
     } 
-    
+    	
         foreach ($decode['paging'] as $data_paging) {
             //var_dump($data_paging);
             $page_url = $data_paging;
@@ -351,6 +351,7 @@ function xola_exp_fetch_post()
             if ($err_exp_next_fetch) {
                 echo "cURL Error #:" . $err_exp_next_fetch;
             } else {
+            	if(!empty($decode_next['data'])){
                 foreach ($decode_next['data'] as $data_next) {
                     # code...
                     unset($data_next['seller']);
@@ -396,6 +397,7 @@ function xola_exp_fetch_post()
                 }
             }
         }
+    	
     
     
 	

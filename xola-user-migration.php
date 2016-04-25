@@ -245,7 +245,7 @@ function xola_user_fetch_post()
     if ($err_user_fetch) {
         echo "cURL Error #:" . $err_user_fetch;
     } else {
-
+    	if(!empty($decode)){
         $name = $decode['name'];
         $email = $decode['email'];
         function random_password($length = 8)
@@ -297,6 +297,7 @@ function xola_user_fetch_post()
             echo '<div align="center"> User Is Created. The Password is : ' . $password .'</div>', PHP_EOL;
 
         }
+    	} else {echo "The User doesn't exists";}
     }
 
 }
