@@ -124,14 +124,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo '<div align="center">We are unable to proceed! Please Fill in the above details</div>';
     }
 }
-function admin_api_sd_fetch($url,$username,$pass){
+function admin_source_api_fetch()
+{
 
-	$ch_s_id = curl_init();
-    curl_setopt($ch_s_id, CURLOPT_URL, $url . '/api/users/me');
+    $s_admin_url = $_POST['s_url'];
+    $s_user_name = $_POST['s_user_name'];
+    $s_password = $_POST['s_password'];
+
+    $ch_s_id = curl_init();
+    curl_setopt($ch_s_id, CURLOPT_URL, $s_admin_url . '/api/users/me');
     curl_setopt($ch_s_id, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch_s_id, CURLOPT_CUSTOMREQUEST, "GET");
     curl_setopt($ch_s_id, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    curl_setopt($ch_s_id, CURLOPT_USERPWD, $username . ':' . $pass);
+    curl_setopt($ch_s_id, CURLOPT_USERPWD, $s_user_name . ':' . $s_password);
     curl_setopt($ch_s_id, CURLOPT_SSL_VERIFYHOST, 0);
     curl_setopt($ch_s_id, CURLOPT_SSL_VERIFYPEER, 0);
 
@@ -147,11 +152,11 @@ function admin_api_sd_fetch($url,$username,$pass){
     } else {
         $id = $response_s['id'];
         $ch_s = curl_init();
-        curl_setopt($ch_s, CURLOPT_URL, $url . '/api/users/' . $id . '/apiKey');
+        curl_setopt($ch_s, CURLOPT_URL, $s_admin_url . '/api/users/' . $id . '/apiKey');
         curl_setopt($ch_s, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch_s, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch_s, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch_s, CURLOPT_USERPWD, $username . ':' . $pass);
+        curl_setopt($ch_s, CURLOPT_USERPWD, $s_user_name . ':' . $s_password);
         curl_setopt($ch_s, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch_s, CURLOPT_SSL_VERIFYPEER, 0);
 
@@ -160,23 +165,59 @@ function admin_api_sd_fetch($url,$username,$pass){
         curl_close($ch_s);
         return $response_s_api[0];
     }
-
 }
- 
 
+function admin_destination_api_fetch()
+{
+
+    $d_admin_url = $_POST['d_url'];
+    $d_user_name = $_POST['d_user_name'];
+    $d_password = $_POST['d_password'];
+
+    $ch_d_id = curl_init();
+    curl_setopt($ch_d_id, CURLOPT_URL, $d_admin_url . '/api/users/me');
+    curl_setopt($ch_d_id, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch_d_id, CURLOPT_CUSTOMREQUEST, "GET");
+    curl_setopt($ch_d_id, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    curl_setopt($ch_d_id, CURLOPT_USERPWD, $d_user_name . ':' . $d_password);
+    curl_setopt($ch_d_id, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch_d_id, CURLOPT_SSL_VERIFYPEER, 0);
+
+    $data_d = curl_exec($ch_d_id);
+
+    $response_d = json_decode($data_d, TRUE);
+
+    $err_d = curl_error($ch_d_id);
+    curl_close($ch_d_id);
+
+    if ($err_d) {
+        echo "cURL Error #:" . $err_d;
+    } else {
+        $id = $response_d['id'];
+        $ch_d = curl_init();
+        curl_setopt($ch_d, CURLOPT_URL, $d_admin_url . '/api/users/' . $id . '/apiKey');
+        curl_setopt($ch_d, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch_d, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($ch_d, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch_d, CURLOPT_USERPWD, $d_user_name . ':' . $d_password);
+        curl_setopt($ch_d, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch_d, CURLOPT_SSL_VERIFYPEER, 0);
+
+        $data_d_api = curl_exec($ch_d);
+        $response_d_api = json_decode($data_d_api, TRUE);
+        curl_close($ch_d);
+        return $response_d_api[0];
+    }
+}
 
 function xola_user_fetch_post()
 {
     $s_url = $_POST['s_url'];
     $d_url = $_POST['d_url'];
     $seller_id = $_POST['seller_id'];
-    $s_user_name = $_POST['s_user_name'];
-    $s_password = $_POST['s_password'];
-    $d_user_name = $_POST['d_user_name'];
-    $d_password = $_POST['d_password'];
 
-    $apiKey_s = admin_api_sd_fetch($s_url,$s_user_name,$s_password);
-    $apiKey_d = admin_api_sd_fetch($d_url,$d_user_name,$d_password);
+    $apiKey_s = admin_source_api_fetch();
+    $apiKey_d = admin_destination_api_fetch();
 
     $curl_user_fetch = curl_init();
 
