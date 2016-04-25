@@ -77,5 +77,7 @@ if ($err) {
 
     $err = curl_error($ch_enable);
     curl_close($ch_enable);
+    $enabled = TRUE;
+    return $enabled;
 }
 ?>
