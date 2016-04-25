@@ -54,11 +54,13 @@
         <h2 class="ui teal image header">
             <!--<img src="http://www.xola.com/images/xola-logo-white-small.png" class="image">-->
             <div class="content">
-                User Experience Migration
+                Experience Migration
             </div>
         </h2>
-        <h4>This helps to enable the user at destination and migrate experiences from source to destination
-            environment</h4>
+        <h4>
+            This will migrate a seller from destination to source environment assuming the seller exists in the destination
+            environment. If a seller does not exist, the migration will abort.
+        </h4>
         <form class="ui medium form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="ui stacked segment">
                 <h4 class="ui dividing header">Source Information</h4>
@@ -98,9 +100,9 @@
                 </div>
 
                 <div class="field">
-                    <label>Seller Password</label>
+                    <label>New Seller Password</label>
                     <div class="ui  input">
-                        <input type="password" name="d_password" placeholder="Password Generated while creating User"
+                        <input type="password" name="d_password" placeholder="Password that is set for newly created user"
                                required />
                     </div>
                 </div>
@@ -136,7 +138,6 @@ ini_set('max_execution_time', 600);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['seller_username'], $_POST['s_exp_url'], $_POST['s_user_name'], $_POST['s_password'], $_POST['d_exp_url'], $_POST['d_user_name'], $_POST['d_password'], $_POST['d_admin_password'])) {
         include_once('xola-user-api.php');
-        user_api_fetch();
         xola_exp_fetch_post();
     } else {
         echo '<div align="center">We are unable to proceed! Please Fill in the above details.</div>';
@@ -229,9 +230,6 @@ function admin_source_api_fetch()
     }
 }
 
-//$apiKey = user_api_fetch();
-
-//echo $apiKey;
 function xola_exp_fetch_post()
 {
 
