@@ -317,6 +317,7 @@ function xola_exp_fetch_post()
             }
 
         }
+   		} else { echo "There is No Experiences.";}
     } 
     	
         foreach ($decode['paging'] as $data_paging) {
@@ -395,6 +396,7 @@ function xola_exp_fetch_post()
                         
                     }
                 }
+            	}else { echo "There is No Experiences.";}
             }
         }
     	
@@ -405,7 +407,5 @@ function xola_exp_fetch_post()
 }
 
 ?>
-
-
 </body>
 </html>
