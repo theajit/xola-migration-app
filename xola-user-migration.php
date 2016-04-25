@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
     <!-- Site Properties -->
-    <title>Migration XOLA</title>
+    <title>User Migration XOLA</title>
     <link rel="stylesheet" type="text/css" href="dist/components/reset.css">
     <link rel="stylesheet" type="text/css" href="dist/components/site.css">
 
@@ -54,48 +54,56 @@
     <div class="column">
         <h2 class="ui teal image header">
             <!--<img src="http://www.xola.com/images/xola-logo-white-small.png" class="image">-->
-            <div class="content">
-                User Migration
-            </div>
+            <div class="content">User Migration</div>
         </h2>
+        <h4>This helps to create an user at destination environment</h4>
         <form class="ui medium form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="ui stacked segment">
-                <div class="field">
-                    <div class="ui input">
-                        <input type="text" name="s_url" placeholder="Source URL with http(s)://" required>
-                    </div>
-                </div>
-                <div class="field">
+            	<h4 class="ui dividing header">Source Information</h4>
+            	 <div class="field">
+            	 <label>Seller ID</label>
                     <div class="ui  input">
-                        <input type="text" name="d_url" placeholder="Destination URL with http(s)://" required>
+                        <input type="text" name="seller_id" placeholder="561dfe1b71b2ec9f1b8b4567" required>
                     </div>
                 </div>
                 <div class="field">
-                    <div class="ui  input">
-                        <input type="text" name="seller_id" placeholder="Seller ID Only" required>
-                    </div>
-                </div>
-                <div class="field">
+                <label>Source URL</label>
                     <div class="ui input">
-                        <input type="text" name="s_user_name" placeholder="Admin User Name (Source Environment)"
+                        <input type="text" name="s_url" placeholder="https://xola.com" required>
+                    </div>
+                </div>
+                <div class="field">
+                <label>Admin User Name</label>
+                    <div class="ui input">
+                        <input type="text" name="s_user_name" placeholder="Admin User Name"
                                required>
                     </div>
                 </div>
                 <div class="field">
+                <label>Admin Password</label>
                     <div class="ui  input">
-                        <input type="password" name="s_password" placeholder="Admin Password (Source Environment)"
+                        <input type="password" name="s_password" placeholder="Admin Password "
                                required>
                     </div>
                 </div>
+                <h4 class="ui dividing header">Destination Information</h4>
                 <div class="field">
+                <label>Destination URL</label>
+                    <div class="ui  input">
+                        <input type="text" name="d_url" placeholder="https://dev.xola.com" required>
+                    </div>
+                </div>              
+                <div class="field">
+                <label>Admin User Name</label>
                     <div class="ui input">
-                        <input type="text" name="d_user_name" placeholder="Admin User Name (Destination Environment)"
+                        <input type="text" name="d_user_name" placeholder="Admin User Name"
                                required>
                     </div>
                 </div>
                 <div class="field">
+                <label>Admin Password</label>
                     <div class="ui  input">
-                        <input type="password" name="d_password" placeholder="Admin Password (Destination Environment)"
+                        <input type="password" name="d_password" placeholder="Admin Password"
                                required>
                     </div>
                 </div>

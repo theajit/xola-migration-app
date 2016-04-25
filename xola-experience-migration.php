@@ -58,51 +58,64 @@
                 User Experience Migration
             </div>
         </h2>
+        <h4>This helps to enable the user at destination and migrate experiences from source to destination environment</h4>
         <form class="ui medium form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="ui stacked segment">
+            <h4 class="ui dividing header">Source Information</h4>
+            	<div class="field">
+            	<label>Seller E-mail</label>
+                    <div class="ui  input">
+                        <input type="text" name="seller_username" placeholder="seller@website.xyz" required />
+                    </div>
+                </div>
                 <div class="field">
+                <label>Source URL</label>
                     <div class="ui input">
-                        <input type="text" name="s_exp_url" placeholder="Source URL with http(s)://" required />
+                        <input type="text" name="s_exp_url" placeholder="https://xola.com" required />
                     </div>
                 </div>
                 <div class="field">
-                    <div class="ui  input">
-                        <input type="text" name="d_exp_url" placeholder="Destination URL with http(s)://" required />
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="ui  input">
-                        <input type="text" name="seller_username" placeholder="Seller E-mail" required />
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="ui  input">
-                        <input type="password" name="d_password" placeholder="Seller Password (Destination Environment)"
-                               required />
-                    </div>
-                </div>
-                <div class="field">
+                <label>Admin User Name</label>
                     <div class="ui input">
-                        <input type="text" name="s_user_name" placeholder="Admin User Name (Source Environment)"
+                        <input type="text" name="s_user_name" placeholder="Admin User Name "
                                required>
                     </div>
                 </div>
                 <div class="field">
+                <label>Admin Password</label>
                     <div class="ui  input">
-                        <input type="password" name="s_password" placeholder="Admin Password (Source Environment)"
+                        <input type="password" name="s_password" placeholder="Admin Password"
                                required />
                     </div>
                 </div>
+                 <h4 class="ui dividing header">Destination Information</h4>
                 <div class="field">
+                <label>Destination URL</label>
+                    <div class="ui  input">
+                        <input type="text" name="d_exp_url" placeholder="https://dev.xola.com" required />
+                    </div>
+                </div>
+                
+                <div class="field">
+                <label>Seller Password</label>
+                    <div class="ui  input">
+                        <input type="password" name="d_password" placeholder="Password Generated while creating User"
+                               required />
+                    </div>
+                </div>
+                
+                <div class="field">
+                <label>Admin User Name</label>
                     <div class="ui input">
-                        <input type="text" name="d_user_name" placeholder="Admin User Name (Destination Environment)"
+                        <input type="text" name="d_user_name" placeholder="Admin User Name"
                                required />
                     </div>
                 </div>
                 <div class="field">
+                <label>Admin Password</label>
                     <div class="ui  input">
                         <input type="password" name="d_admin_password"
-                               placeholder="Admin Password (Destination Environment)" required />
+                               placeholder="Admin Password" required />
                     </div>
                 </div>
 
