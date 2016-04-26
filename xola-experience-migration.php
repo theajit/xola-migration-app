@@ -230,8 +230,8 @@ function post_experience($data, $environment_url, $api_key)
 
         if (!empty($decode_data)) {
             $new_id = $decode_data['id'];
-            foreach ($data['schedules'] as $schedules) {
-                post_schedule($schedules,$environment_url,$new_id,$api_key);
+            foreach ($data['schedules'] as $schedule) {
+                post_schedule($schedule,$environment_url,$new_id,$api_key);
             }
             
         } else {
@@ -240,9 +240,10 @@ function post_experience($data, $environment_url, $api_key)
     }
 }
 
-function post_schedule($post_schedule,$url,$exp_id,$api_key){
+function post_schedule($post_schedule,$url,$exp_id,$api_key) 
+{
 
-$curl_exp_schedule = curl_init();
+    $curl_exp_schedule = curl_init();
 
     curl_setopt_array($curl_exp_schedule, array(
         CURLOPT_URL => $url . '/api/experiences/'.$exp_id. '/schedules',
