@@ -33,12 +33,15 @@
         body {
             background-color: #DADADA;
         }
+
         body .grid {
             height: 100%;
         }
+
         .image {
             margin-top: -100px;
         }
+
         .column {
             max-width: 450px;
         }
@@ -55,8 +58,8 @@
             </div>
         </h2>
         <h4>
-            This will migrate a seller from destination to source environment assuming the seller exists in the destination
-            environment. If a seller does not exist, the migration will abort.
+            This will migrate a seller from destination to source environment assuming the seller exists in the
+            destination environment. If a seller does not exist, the migration will abort.
         </h4>
         <form class="ui medium form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="ui stacked segment">
@@ -99,8 +102,7 @@
                 <div class="field">
                     <label>New Seller Password</label>
                     <div class="ui  input">
-                        <input type="password" name="d_password" placeholder="Password that is set for newly created user"
-                               required />
+                        <input type="password" name="d_password" placeholder="Seller account password" required />
                     </div>
                 </div>
 
@@ -134,19 +136,21 @@ ini_set('max_execution_time', 600);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['seller_username'], $_POST['s_exp_url'], $_POST['s_user_name'], $_POST['s_password'], $_POST['d_exp_url'], $_POST['d_user_name'], $_POST['d_password'], $_POST['d_admin_password'])) {
         include_once('xola-user-api.php');
-        if($enabled === TRUE){
-        	echo "User is enabled. Fetching experiences.";
-        	xola_exp_fetch_post(); 
+        if ($enabled === TRUE) {
+            echo "User is enabled, now fetching experiences.<br>";
+            xola_exp_fetch_post();
         } else {
-        	echo "User Is not enabled.";
+            echo "User Is not enabled.";
         }
-  		   
+
     } else {
         echo '<div align="center">We are unable to proceed! Please Fill in the above details.</div>';
     }
 }
-function user_or_admin_api_fetch($exp_url,$user,$passwd){
-	$ch_id = curl_init();
+
+function user_or_admin_api_fetch($exp_url, $user, $passwd)
+{
+    $ch_id = curl_init();
     curl_setopt($ch_id, CURLOPT_URL, $exp_url . '/api/users/me');
     curl_setopt($ch_id, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch_id, CURLOPT_CUSTOMREQUEST, "GET");
@@ -176,161 +180,153 @@ function user_or_admin_api_fetch($exp_url,$user,$passwd){
         return $response_api[0];
     }
 }
+
+function post_experience($data, $environment_url, $api_key)
+{
+    unset($data['seller']);
+    unset($data['photo']);
+    unset($data['medias']);
+    $post_exp = json_encode($data);
+
+    echo "Importing " . $data['name'] . "<br>";
+
+    $curl_exp_post = curl_init();
+
+    curl_setopt_array($curl_exp_post, array(
+        CURLOPT_URL => $environment_url . '/api/experiences',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_SSL_VERIFYHOST => 0,
+        CURLOPT_SSL_VERIFYPEER => 0,
+        CURLOPT_POSTFIELDS => $post_exp,
+        CURLOPT_HTTPHEADER => array(
+            "Content-Type: application/json",
+            "Cache-Control: no-cache",
+            "x-api-key: " . $api_key,
+            "Accept: application/json"
+        ),
+    ));
+
+    $response_exp_post = curl_exec($curl_exp_post);
+    $err_exp_post = curl_error($curl_exp_post);
+    curl_close($curl_exp_post);
+
+    //$decode = json_decode($response_exp_post, TRUE);
+    if ($err_exp_post) {
+        echo "cURL Error while posting experience #:" . $err_exp_post;
+    } else {
+        //$first = count($decode['data']);
+        //print_r($_POST);
+    }
+}
+
+
 function xola_exp_fetch_post()
 {
-	    $s_exp_url = $_POST['s_exp_url'];
-	    $d_exp_url = $_POST['d_exp_url'];
-	    $seller_username = $_POST['seller_username'];
-	    $s_password = $_POST['s_password'];
-	    $d_password = $_POST['d_password'];
-	    $s_user_name = $_POST['s_user_name'];
-	    $s_password = $_POST['s_password'];
-	    
-	    $api_key = user_or_admin_api_fetch($d_exp_url,$seller_username,$d_password);
-	    
-	    $api_key_s = user_or_admin_api_fetch($s_exp_url,$s_user_name,$s_password);
-	   
-    
-    	$curl_exp_fetch = curl_init();
-	    	curl_setopt_array($curl_exp_fetch, array(
-	        	CURLOPT_URL => $s_exp_url . '/api/experiences?seller=' . $seller_username . '&admin=true&limit=100',
-	        	CURLOPT_RETURNTRANSFER => true,
-	        	CURLOPT_ENCODING => "",
-	        	CURLOPT_MAXREDIRS => 10,
-	        	CURLOPT_TIMEOUT => 30,
-	        	CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	        	CURLOPT_CUSTOMREQUEST => "GET",
-	        	CURLOPT_SSL_VERIFYHOST => 0,
-	        	CURLOPT_SSL_VERIFYPEER => 0,
-	        	CURLOPT_HTTPHEADER => array(
-	           		 "cache-control: no-cache",
-	            		"x-api-key: " . $api_key_s
-	        	),
-	    	));
-    	$response_exp_fetch = curl_exec($curl_exp_fetch);
-    	$err_exp_fetch = curl_error($curl_exp_fetch);
-	    $decode = json_decode($response_exp_fetch, TRUE);
-	    curl_close($curl_exp_fetch);
-	    if ($err_exp_fetch) {
-	        echo "cURL Error #:" . $err_exp_fetch;
-	    } else {
-	        //var_dump($decode);
-	        if (!empty($decode['data'])) {
-	            foreach ($decode['data'] as $data) {
-	                //$data = $decode['data'][0];
-	                //var_dump($data);
-	                unset($data['seller']);
-	                unset($data['photo']);
-	                unset($data['medias']);
-	                //var_dump($data);
-	                $post_exp = json_encode($data);
-	                //var_dump($data);
-	                $curl_exp_post = curl_init();
-	                curl_setopt_array($curl_exp_post, array(
-	                    CURLOPT_URL => $d_exp_url . '/api/experiences',
-	                    CURLOPT_RETURNTRANSFER => true,
-	                    CURLOPT_ENCODING => "",
-	                    CURLOPT_MAXREDIRS => 10,
-	                    CURLOPT_TIMEOUT => 30,
-	                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	                    CURLOPT_CUSTOMREQUEST => "POST",
-	                    CURLOPT_SSL_VERIFYHOST => 0,
-	                    CURLOPT_SSL_VERIFYPEER => 0,
-	                    CURLOPT_POSTFIELDS => $post_exp,
-	                    CURLOPT_HTTPHEADER => array(
-	                        "Content-Type: application/json",
-	                        "Cache-Control: no-cache",
-	                        "x-api-key: " . $api_key,
-	                        "Accept: application/json"
-	                    ),
-	                ));
-	                $response_exp_post = curl_exec($curl_exp_post);
-	                $err_exp_post = curl_error($curl_exp_post);
-	                //$decode = json_decode($response,TRUE);
-	                curl_close($curl_exp_post);
-	                if ($err_exp_post) {
-	                    echo "cURL Error #:" . $err_exp_post;
-	                } else {
-	                    $first = count($decode['data']);
-	                    //print_r($_POST);
-	                }
-	            }
-	        } else {
-	            echo "There is No Experiences.";
-	        }
-	    }
-	    foreach ($decode['paging'] as $data_paging) {
-	        //var_dump($data_paging);
-	        $page_url = $data_paging;
-	        $curl_exp_next_fetch = curl_init();
-	        curl_setopt_array($curl_exp_next_fetch, array(
-	            CURLOPT_URL => $s_exp_url . $page_url,
-	            CURLOPT_RETURNTRANSFER => true,
-	            CURLOPT_ENCODING => "",
-	            CURLOPT_MAXREDIRS => 10,
-	            CURLOPT_TIMEOUT => 30,
-	            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	            CURLOPT_CUSTOMREQUEST => "GET",
-	            CURLOPT_SSL_VERIFYHOST => 0,
-	            CURLOPT_SSL_VERIFYPEER => 0,
-	            CURLOPT_HTTPHEADER => array(
-	                "cache-control: no-cache",
-	                "x-api-key: " . $api_key_s
-	            ),
-	        ));
-	        $response_exp_next_fetch = curl_exec($curl_exp_next_fetch);
-	        $err_exp_next_fetch = curl_error($curl_exp_next_fetch);
-	        $decode_next = json_decode($response_exp_next_fetch, TRUE);
-	        curl_close($curl_exp_next_fetch);
-	        if ($err_exp_next_fetch) {
-	            echo "cURL Error #:" . $err_exp_next_fetch;
-	        } else {
-	            if (!empty($decode_next['data'])) {
-	                foreach ($decode_next['data'] as $data_next) {
-	                    # code...
-	                    unset($data_next['seller']);
-	                    unset($data_next['photo']);
-	                    unset($data_next['medias']);
-	                    //var_dump($data);
-	                    $post_exp_next = json_encode($data_next);
-	                    $curl_exp_post_next = curl_init();
-	                    curl_setopt_array($curl_exp_post_next, array(
-	                        CURLOPT_URL => $d_exp_url . '/api/experiences',
-	                        CURLOPT_RETURNTRANSFER => true,
-	                        CURLOPT_ENCODING => "",
-	                        CURLOPT_MAXREDIRS => 10,
-	                        CURLOPT_TIMEOUT => 900,
-	                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	                        CURLOPT_CUSTOMREQUEST => "POST",
-	                        CURLOPT_SSL_VERIFYHOST => 0,
-	                        CURLOPT_SSL_VERIFYPEER => 0,
-	                        CURLOPT_POSTFIELDS => $post_exp_next,
-	                        CURLOPT_HTTPHEADER => array(
-	                            "Content-Type: application/json",
-	                            "Cache-Control: no-cache",
-	                            "x-api-key: " . $api_key,
-	                            "Accept: application/json"
-	                        ),
-	                    ));
-	                    $response_exp_post_next = curl_exec($curl_exp_post_next);
-	                    $err_exp_post_next = curl_error($curl_exp_post_next);
-	                    //$decode = json_decode($response,TRUE);
-	                    curl_close($curl_exp_post_next);
-	                    if ($err_exp_post_next) {
-	                        echo "cURL Error #:" . $err_exp_post_next;
-	                    } else {
-	                        $next = count($decode_next['data']);
-	                        //print_r($_POST);
-	                    }
-	                }
-	            } else {
-	                echo "There is No Experiences.";
-	            }
-	        }
-    
+    $s_exp_url = $_POST['s_exp_url'];
+    $d_exp_url = $_POST['d_exp_url'];
+    $seller_username = $_POST['seller_username'];
+    $d_password = $_POST['d_password'];
+    $s_user_name = $_POST['s_user_name'];
+    $s_password = $_POST['s_password'];
+
+    $api_key = user_or_admin_api_fetch($d_exp_url, $seller_username, $d_password);
+
+    $api_key_s = user_or_admin_api_fetch($s_exp_url, $s_user_name, $s_password);
+
+    $curl_exp_fetch = curl_init();
+    $total_experiences = 0;
+    curl_setopt_array($curl_exp_fetch, array(
+        CURLOPT_URL => $s_exp_url . '/api/experiences?seller=' . urlencode($seller_username) . '&admin=true&limit=100',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "GET",
+        CURLOPT_SSL_VERIFYHOST => 0,
+        CURLOPT_SSL_VERIFYPEER => 0,
+        CURLOPT_HTTPHEADER => array(
+            "cache-control: no-cache",
+            "x-api-key: " . $api_key_s
+        ),
+    ));
+    $response_exp_fetch = curl_exec($curl_exp_fetch);
+    $err_exp_fetch = curl_error($curl_exp_fetch);
+    $decode = json_decode($response_exp_fetch, TRUE);
+    curl_close($curl_exp_fetch);
+
+    if ($err_exp_fetch) {
+        echo "cURL Error #:" . $err_exp_fetch;
+        return;
+    } else {
+        if (!is_array($decode)) {
+            echo "Invalid response received from source server while fetching experiences<br>";
+            var_dump($decode);
+            return;
+        }
+
+        if (!empty($decode['data'])) {
+            foreach ($decode['data'] as $data) {
+                post_experience($data, $d_exp_url, $api_key);
+                $total_experiences++;
+            }
+            echo "Finished importing $total_experiences experiences from first api call<br>";
+        } else {
+            echo "There are no experiences to import.";
+            return;
+        }
+    }
+
+    if (isset($decode['paging']['next'])) {
+        $page_url = $decode['paging']['next'];
+        $curl_exp_next_fetch = curl_init();
+        curl_setopt_array($curl_exp_next_fetch, array(
+            CURLOPT_URL => $s_exp_url . $page_url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "x-api-key: " . $api_key_s
+            ),
+        ));
+        $response_exp_next_fetch = curl_exec($curl_exp_next_fetch);
+        $err_exp_next_fetch = curl_error($curl_exp_next_fetch);
+        $decode_next = json_decode($response_exp_next_fetch, TRUE);
+        curl_close($curl_exp_next_fetch);
+
+        if ($err_exp_next_fetch) {
+            echo "cURL Error while processing paginated data#:" . $err_exp_next_fetch;
+        } else {
+            if (!is_array($decode_next)) {
+                echo "Invalid response from source server when fetching paginated data<br>";
+                var_dump($decode_next);
+                return;
+            }
+
+            if (!empty($decode_next['data'])) {
+                foreach ($decode_next['data'] as $data_next) {
+                    post_experience($data_next, $d_exp_url, $api_key);
+                    $total_experiences++;
+                }
+            }
+        }
+    }
+
+
+    echo '<div align="center">' . $total_experiences . ' Experiences Migrated</div>';
 }
-    echo '<div align="center">' . ($first + $next) . ' Experiences Migrated</div>';
-}
+
 ?>
 </body>
 </html>

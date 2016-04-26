@@ -34,8 +34,9 @@ function admin_api_fetch()
         return $response_api[0];
     }
 }
+
 $i = $_POST['d_exp_url'];
-$j = $_POST['seller_username'];
+$j = urlencode($_POST['seller_username']);
 $apiKey_user = admin_api_fetch();
 $ch_id = curl_init();
 curl_setopt($ch_id, CURLOPT_URL, $i . '/api/users?private=true&type=1&limit=100&search=' . $j);
@@ -51,6 +52,13 @@ if ($err) {
     echo "cURL Error #:" . $err;
 } else {
     $id = $response['data'][0]['id'];
+    echo "User ID for $j is $id<br>";
+    if (empty($id)) {
+        echo "Error user ID not found for $j<br>";
+        $enabled = false;
+        return false;
+    }
+
     $ch_enable = curl_init();
     curl_setopt($ch_enable, CURLOPT_URL, $i . '/api/users/' . $id . '/enabled');
     curl_setopt($ch_enable, CURLOPT_RETURNTRANSFER, 1);

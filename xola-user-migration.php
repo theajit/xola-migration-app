@@ -33,12 +33,15 @@
         body {
             background-color: #DADADA;
         }
+
         body .grid {
             height: 100%;
         }
+
         .image {
             margin-top: -100px;
         }
+
         .column {
             max-width: 450px;
         }
@@ -120,8 +123,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo '<div align="center">We are unable to proceed! Please Fill in the above details</div>';
     }
 }
-function admin_api_sd_fetch($url,$username,$pass){
-	$ch_s_id = curl_init();
+
+function admin_api_sd_fetch($url, $username, $pass)
+{
+    $ch_s_id = curl_init();
     curl_setopt($ch_s_id, CURLOPT_URL, $url . '/api/users/me');
     curl_setopt($ch_s_id, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch_s_id, CURLOPT_CUSTOMREQUEST, "GET");
@@ -151,7 +156,7 @@ function admin_api_sd_fetch($url,$username,$pass){
         return $response_s_api[0];
     }
 }
- 
+
 function xola_user_fetch_post()
 {
     $s_url = $_POST['s_url'];
@@ -162,11 +167,11 @@ function xola_user_fetch_post()
     $d_user_name = $_POST['d_user_name'];
     $d_password = $_POST['d_password'];
 
-    $apiKey_s = admin_api_sd_fetch($s_url,$s_user_name,$s_password);
-    $apiKey_d = admin_api_sd_fetch($d_url,$d_user_name,$d_password);
+    $apiKey_s = admin_api_sd_fetch($s_url, $s_user_name, $s_password);
+    $apiKey_d = admin_api_sd_fetch($d_url, $d_user_name, $d_password);
 
     $curl_user_fetch = curl_init();
-    
+
     curl_setopt_array($curl_user_fetch, array(
         CURLOPT_URL => $s_url . '/api/seller/' . $seller_id . '?admin=true',
         CURLOPT_RETURNTRANSFER => true,
@@ -192,12 +197,14 @@ function xola_user_fetch_post()
         if (!empty($decode)) {
             $name = $decode['name'];
             $email = $decode['email'];
+
             function random_password($length = 8)
             {
-                $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
+                $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!$";
                 $password = substr(str_shuffle($chars), 0, $length);
                 return $password;
             }
+
             $password = random_password(8);
             $post = [
                 'name' => $name,
@@ -238,6 +245,7 @@ function xola_user_fetch_post()
         }
     }
 }
+
 ?>
 </body>
 </html>
