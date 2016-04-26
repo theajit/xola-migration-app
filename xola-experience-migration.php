@@ -223,14 +223,17 @@ function post_experience($data, $environment_url, $api_key)
         //$first = count($decode['data']);
         //print_r($_POST);
         if (!is_array($decode_data)) {
-            echo "Invalid response received from source server while fetching experiences<br>";
+            echo "Invalid response received from destination server while posting experiences<br>";
             var_dump($decode);
             return;
         }
 
         if (!empty($decode_data)) {
             $new_id = $decode_data['id'];
-            return $new_id;
+            foreach ($data['schedules'] as $schedules) {
+                post_schedule($schedules,$environment_url,$new_id,$api_key);
+            }
+            
         } else {
             return;
         }
@@ -326,9 +329,6 @@ function xola_exp_fetch_post()
                 $total_experiences++;
             }
             echo "Finished importing $total_experiences experiences from first api call<br>";
-            foreach ($decode['data']['schedules'] as $schedules) {
-                post_schedule($schedules,$d_exp_url,$new_id,$api_key);
-            }
         } else {
             echo "There are no experiences to import.";
             return;
@@ -371,9 +371,6 @@ function xola_exp_fetch_post()
                 foreach ($decode_next['data'] as $data_next) {
                     post_experience($data_next, $d_exp_url, $api_key);
                     $total_experiences++;
-                }
-                foreach ($decode['data']['schedules'] as $schedules) {
-                    post_schedule($schedules,$d_exp_url,$new_id,$api_key);
                 }
             }
         }
