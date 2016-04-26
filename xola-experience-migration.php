@@ -228,6 +228,12 @@ function post_experience($experience, $environment_url, $api_key)
             return;
         }
 
+        if (!isset($decode_data['id'])) {
+            echo "Experience ID is not present in response<br>";
+            var_dump($decode_data);
+            return;
+        }
+
         if (!empty($experience['schedules'])) {
             $experience_id = $decode_data['id'];
             foreach ($experience['schedules'] as $schedule) {
