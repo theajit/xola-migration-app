@@ -181,14 +181,14 @@ function user_or_admin_api_fetch($exp_url, $user, $passwd)
     }
 }
 
-function post_experience($data, $environment_url, $api_key)
+function post_experience($experience, $environment_url, $api_key)
 {
-    unset($data['seller']);
-    unset($data['photo']);
-    unset($data['medias']);
-    $post_exp = json_encode($data);
+    unset($experience['seller']);
+    unset($experience['photo']);
+    unset($experience['medias']);
+    $post_exp = json_encode($experience);
 
-    echo "Importing " . $data['name'] . "<br>";
+    echo "Importing " . $experience['name'] . "<br>";
 
     $curl_exp_post = curl_init();
 
@@ -224,29 +224,28 @@ function post_experience($data, $environment_url, $api_key)
         //print_r($_POST);
         if (!is_array($decode_data)) {
             echo "Invalid response received from destination server while posting experiences<br>";
-            var_dump($decode);
+            var_dump($decode_data);
             return;
         }
 
-        if (!empty($decode_data)) {
-            $new_id = $decode_data['id'];
-            foreach ($data['schedules'] as $schedule) {
-                post_schedule($schedule,$environment_url,$new_id,$api_key);
+        if (!empty($experience['schedules'])) {
+            $experience_id = $decode_data['id'];
+            foreach ($experience['schedules'] as $schedule) {
+                post_schedule($schedule, $environment_url, $experience_id, $api_key);
             }
-            
+
         } else {
             return;
         }
     }
 }
 
-function post_schedule($post_schedule,$url,$exp_id,$api_key) 
+function post_schedule($post_schedule, $url, $exp_id, $api_key)
 {
-
     $curl_exp_schedule = curl_init();
 
     curl_setopt_array($curl_exp_schedule, array(
-        CURLOPT_URL => $url . '/api/experiences/'.$exp_id. '/schedules',
+        CURLOPT_URL => $url . '/api/experiences/' . $exp_id . '/schedules',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
@@ -255,7 +254,7 @@ function post_schedule($post_schedule,$url,$exp_id,$api_key)
         CURLOPT_CUSTOMREQUEST => "POST",
         CURLOPT_SSL_VERIFYHOST => 0,
         CURLOPT_SSL_VERIFYPEER => 0,
-        CURLOPT_POSTFIELDS => $post_schedule ,
+        CURLOPT_POSTFIELDS => json_encode($post_schedule),
         CURLOPT_HTTPHEADER => array(
             "Content-Type: application/json",
             "Cache-Control: no-cache",
@@ -277,7 +276,6 @@ function post_schedule($post_schedule,$url,$exp_id,$api_key)
     }
 
 }
-
 
 function xola_exp_fetch_post()
 {
@@ -376,7 +374,6 @@ function xola_exp_fetch_post()
             }
         }
     }
-
 
     echo '<div align="center">' . $total_experiences . ' Experiences Migrated</div>';
 }
