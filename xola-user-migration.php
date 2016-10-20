@@ -173,7 +173,7 @@ function xola_user_fetch_post()
     $curl_user_fetch = curl_init();
 
     curl_setopt_array($curl_user_fetch, array(
-        CURLOPT_URL => $s_url . '/api/seller/' . $seller_id . '?admin=true',
+        CURLOPT_URL => $s_url . '/api/sellers/' . $seller_id . '?admin=true',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
