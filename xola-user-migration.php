@@ -184,7 +184,7 @@ function xola_user_fetch_post()
         CURLOPT_SSL_VERIFYPEER => 0,
         CURLOPT_HTTPHEADER => array(
             "cache-control: no-cache",
-            "x-api-key: " . $apiKey_s
+            "X-API-KEY: " . $apiKey_s
         ),
     ));
     $response_user_fetch = curl_exec($curl_user_fetch);
@@ -227,7 +227,7 @@ function xola_user_fetch_post()
                 CURLOPT_SSL_VERIFYPEER => 0,
                 CURLOPT_POSTFIELDS => ($post),
                 CURLOPT_HTTPHEADER => array(
-                    "x-api-key : " . $apiKey_d,
+                    "X-API-KEY : " . $apiKey_d,
                     "cache-control: no-cache"
                 ),
             ));

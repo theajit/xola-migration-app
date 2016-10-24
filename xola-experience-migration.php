@@ -206,7 +206,7 @@ function post_experience($experience, $environment_url, $api_key)
         CURLOPT_HTTPHEADER => array(
             "Content-Type: application/json",
             "Cache-Control: no-cache",
-            "x-api-key: " . $api_key,
+            "X-API-KEY: " . $api_key,
             "Accept: application/json"
         ),
     ));
@@ -264,7 +264,7 @@ function post_schedule($post_schedule, $url, $exp_id, $api_key)
         CURLOPT_HTTPHEADER => array(
             "Content-Type: application/json",
             "Cache-Control: no-cache",
-            "x-api-key: " . $api_key,
+            "X-API-KEY: " . $api_key,
             "Accept: application/json"
         ),
     ));
@@ -310,7 +310,7 @@ function xola_exp_fetch_post()
         CURLOPT_SSL_VERIFYPEER => 0,
         CURLOPT_HTTPHEADER => array(
             "cache-control: no-cache",
-            "x-api-key: " . $api_key_s
+            "X-API-KEY: " . $api_key_s
         ),
     ));
     $response_exp_fetch = curl_exec($curl_exp_fetch);
@@ -355,7 +355,7 @@ function xola_exp_fetch_post()
             CURLOPT_SSL_VERIFYPEER => 0,
             CURLOPT_HTTPHEADER => array(
                 "cache-control: no-cache",
-                "x-api-key: " . $api_key_s
+                "X-API-KEY: " . $api_key_s
             ),
         ));
         $response_exp_next_fetch = curl_exec($curl_exp_next_fetch);
